@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术文章 - Dinosaur的技术博客</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 文章列表页特有样式 */
+        .page-header {
+            text-align: center;
+            margin: 2rem 0 3rem;
+            position: relative;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .page-header .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .filters-container {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .category-filters a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #ecf0f1;
+            border-radius: 20px;
+            color: #34495e;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .category-filters a:hover, 
+        .category-filters a.active {
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .project-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .project-card:hover .project-image img {
+            transform: scale(1.05);
+        }
+        
+        .project-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-content h2 {
+            margin: 0 0 0.8rem;
+            font-size: 1.3rem;
+            line-height: 1.4;
+        }
+        
+        .project-content h2 a {
+            color: #2c3e50;
+        }
+        
+        .project-excerpt {
+            color: #7f8c8d;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin-top: auto;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .project-tags a {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: #f1f5f9;
+            border-radius: 4px;
+            color: #3498db;
+            font-size: 0.75rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+        }
+        
+        .pagination a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin: 0 5px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+        
+        .pagination a:hover, 
+        .pagination a.active {
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .project-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-filters {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Dinosaur的技术博客</h1>
+            <p>记录AI开发、计算机视觉与生活思考</p>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="projects.html" class="active"><i class="fas fa-book"></i> 文章</a></li>
+                <li><a href="projects.html"><i class="fas fa-tags"></i> 项目</a></li>
+                <li><a href="#about"><i class="fas fa-user"></i> 关于</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> 联系</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>技术文章</h1>
+            <p class="subtitle">这里是我分享的技术心得、开发经验和学习笔记，涵盖计算机视觉、深度学习、算法优化等多个领域</p>
+        </div>
+        
+        <div class="filters-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索文章...">
+            </div>
+            
+            <div class="category-filters">
+                <a href="#" class="active">全部</a>
+                <a href="#">计算机视觉</a>
+                <a href="#">深度学习</a>
+                <a href="#">YOLO</a>
+                <a href="#">目标检测</a>
+                <a href="#">垃圾分类</a>
+                <a href="#">图像处理</a>
+            </div>
+        </div>
+        
+        <div class="project-list">
+            <!-- 文章卡片1 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="YOLO算法">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project1.html">YOLO-IWCA: 智能垃圾分类助手的开发实践</a></h2>
+                    <div class="project-excerpt">
+                        本文详细介绍了基于YOLOv11的智能垃圾分类系统的开发全过程，包括数据集准备、模型训练、性能优化和部署实践...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">YOLO</a>
+                        <a href="#">目标检测</a>
+                        <a href="#">垃圾分类</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-06-15</span>
+                        <span><i class="far fa-eye"></i> 1.2k浏览</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文章卡片2 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c0b8e0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="坐姿检测">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project2.html">多模态坐姿检测系统的设计与实现</a></h2>
+                    <div class="project-excerpt">
+                        结合RGB和深度信息的多模态坐姿检测方案，探讨如何融合不同传感器数据提高检测精度，并分享实际部署中的性能优化技巧...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">多模态姿态估计</a>
+                        <a href="#">MediaPipe</a>
+                        <a href="#">OpenPose</a>
+                        <a href="#">深度学习</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-05-22</span>
+                        <span><i class="far fa-eye"></i> 856浏览</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文章卡片3 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="人脸马赛克">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project3.html">基于OpenCV的人脸马赛克系统技术解析</a></h2>
+                    <div class="project-excerpt">
+                        详细介绍使用OpenCV实现人脸检测与马赛克处理的完整流程，包括关键点检测、动态马赛克算法和可逆加密方案的设计...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">OpenCV</a>
+                        <a href="#">人脸识别</a>
+                        <a href="#">隐私保护</a>
+                        <a href="#">图像处理</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-04-18</span>
+                        <span><i class="far fa-eye"></i> 1.5k浏览</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文章卡片4 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="PyTorch">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project4.html">PyTorch模型部署优化实战指南</a></h2>
+                    <div class="project-excerpt">
+                        从实验模型到生产部署的完整优化路径，分享PyTorch模型量化、剪枝和转换为ONNX格式的实践经验与性能对比...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">PyTorch</a>
+                        <a href="#">模型部署</a>
+                        <a href="#">性能优化</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-03-10</span>
+                        <span><i class="far fa-eye"></i> 2.3k浏览</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文章卡片5 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c0b8e0?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="算法优化">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project5.html">YOLO算法在边缘设备上的优化策略</a></h2>
+                    <div class="project-excerpt">
+                        针对边缘计算设备的YOLO算法优化方法总结，包括网络轻量化、注意力机制改进和TensorRT加速等技术的实际应用效果...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">YOLO</a>
+                        <a href="#">边缘计算</a>
+                        <a href="#">TensorRT</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-02-05</span>
+                        <span><i class="far fa-eye"></i> 1.8k浏览</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文章卡片6 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="技术思考">
+                </div>
+                <div class="project-content">
+                    <h2><a href="projects/project6.html">计算机视觉工程师的成长路径思考</a></h2>
+                    <div class="project-excerpt">
+                        结合个人经历分享计算机视觉领域的学习路线、核心能力培养和技术转型思考，给初入该领域开发者的实用建议...
+                    </div>
+                    <div class="project-tags">
+                        <a href="#">职业发展</a>
+                        <a href="#">学习路线</a>
+                        <a href="#">技术思考</a>
+                    </div>
+                    <div class="project-meta">
+                        <span><i class="far fa-calendar"></i> 2023-01-12</span>
+                        <span><i class="far fa-eye"></i> 3.1k浏览</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pagination">
+            <a href="#"><i class="fas fa-angle-left"></i></a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#"><i class="fas fa-angle-right"></i></a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Dinosaur的技术博客. 保留所有权利.</p>
+            <div class="social-links">
+                <a href="https://github.com/dinosaurerer" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://twitter.com/yourusername" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 简单的搜索功能
+        document.querySelector('.search-box input').addEventListener('keyup', function(e) {
+            if(e.key === 'Enter') {
+                const searchTerm = this.value.toLowerCase();
+                const projects = document.querySelectorAll('.project-card');
+                
+                projects.forEach(project => {
+                    const title = project.querySelector('h2').textContent.toLowerCase();
+                    const excerpt = project.querySelector('.project-excerpt').textContent.toLowerCase();
+                    const tags = project.querySelector('.project-tags').textContent.toLowerCase();
+                    
+                    if(title.includes(searchTerm) || excerpt.includes(searchTerm) || tags.includes(searchTerm)) {
+                        project.style.display = 'block';
+                    } else {
+                        project.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // 分类筛选
+        document.querySelectorAll('.category-filters a').forEach(filter => {
+            filter.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 更新active状态
+                document.querySelectorAll('.category-filters a').forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.textContent;
+                const projects = document.querySelectorAll('.project-card');
+                
+                if(category === '全部') {
+                    projects.forEach(project => project.style.display = 'block');
+                    return;
+                }
+                
+                projects.forEach(project => {
+                    const tags = project.querySelector('.project-tags').textContent;
+                    if(tags.includes(category)) {
+                        project.style.display = 'block';
+                    } else {
+                        project.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
