@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的甜蜜时光 | zyx_with_sxy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFB7C5; /* 樱花粉 */
+            --secondary: #FFD1DC; /* 淡粉色 */
+            --accent: #87CEFA; /* 天空蓝 */
+            --text: #555; /* 主要文字颜色 */
+            --light: #FFF5F7; /* 浅粉色背景 */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* 顶部导航 */
+        .love-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .love-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.1"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: 100px;
+            pointer-events: none;
+        }
+        
+        .love-header h1 {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .love-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .couple-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .couple-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .couple-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .heart-icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            animation: heartbeat 1.2s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.2); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.2); }
+            70% { transform: scale(1); }
+        }
+        
+        /* 时间线导航 */
+        .timeline-nav {
+            background-color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .timeline-nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        .timeline-nav li {
+            margin: 0.5rem 1.5rem;
+        }
+        
+        .timeline-nav a {
+            color: var(--text);
+            font-size: 1.1rem;
+            padding: 0.5rem 0;
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .timeline-nav a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .timeline-nav a:hover,
+        .timeline-nav a.active {
+            color: var(--primary);
+        }
+        
+        .timeline-nav a:hover::after,
+        .timeline-nav a.active::after {
+            width: 100%;
+        }
+        
+        /* 时间线内容 */
+        .timeline-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .timeline-section {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            display: inline-block;
+            padding: 0 1.5rem;
+            background: white;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+            z-index: 1;
+        }
+        
+        /* 朋友圈动态样式 */
+        .moment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.3s;
+        }
+        
+        .moment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        
+        .moment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+        
+        .moment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+            border: 2px solid var(--secondary);
+        }
+        
+        .moment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .moment-user {
+            flex-grow: 1;
+        }
+        
+        .moment-user h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .moment-time {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .moment-content {
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+        }
+        
+        .moment-images {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 1.2rem;
+        }
+
+        /* 1张图片时的样式 */
+        .moment-images:has(> .moment-image:first-child:nth-last-child(1)) {
+            grid-template-columns: 1fr;
+        }
+
+        /* 2张图片时的样式 */
+        .moment-images:has(> .moment-image:first-child:nth-last-child(2)),
+        .moment-images:has(> .moment-image:first-child:nth-last-child(2) ~ .moment-image) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* 3张图片时的样式 */
+        .moment-images:has(> .moment-image:first-child:nth-last-child(3)),
+        .moment-images:has(> .moment-image:first-child:nth-last-child(3) ~ .moment-image) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* 4张及以上图片时的样式 */
+        .moment-images:has(> .moment-image:first-child:nth-last-child(n+4)),
+        .moment-images:has(> .moment-image:first-child:nth-last-child(n+4) ~ .moment-image) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .moment-image {
+            height: 0;
+            padding-bottom: 100%; /* 保持正方形 */
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+
+        .moment-image img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .moment-image {
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+        
+        .moment-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .moment-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .moment-actions {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding-top: 0.8rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary);
+        }
+        
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* 留言板块 */
+        .comment-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+        
+        .comment-form h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 183, 197, 0.2);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin-left: auto;
+            box-shadow: 0 4px 10px rgba(255, 183, 197, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 183, 197, 0.4);
+        }
+        
+        .comments-container {
+            margin-top: 2rem;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex-grow: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            font-weight: 500;
+        }
+        
+        .comment-time {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .comment-text {
+            line-height: 1.6;
+        }
+        
+        /* 页脚样式 */
+        .love-footer {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+        
+        .love-footer p {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .anniversary {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .couple-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .love-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .timeline-nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .timeline-nav li {
+                margin: 0.5rem 0;
+            }
+            
+            .moment-images {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .moment-images {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部区域 -->
+    <header class="love-header">
+        <div class="container">
+            <h1>坏坏鑫 · 好好怡</h1>
+            <p>记录我们生活的点点滴滴</p>
+            
+            <div class="couple-container">
+                <div class="couple-avatar">
+                    <img src="/assets/photos/5503a41d8e4872417a2e1590aaf32364.jpeg" alt="小时">
+                </div>
+                <div class="heart-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="couple-avatar">
+                    <img src="/assets/photos/2C46A6ED17C3FBD90C74883AB4DA2694.jpg" alt="阿鑫">
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 时间线导航 -->
+    <nav class="timeline-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#moments" class="active">记录小时的米米时刻</a></li>
+                <li><a href="#sweet">我和小时的甜蜜时光</a></li>
+                <li><a href="#thoughts">阿鑫有话要说</a></li>
+                <li><a href="#comments">留言</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 时间线内容 -->
+    <div class="timeline-container">
+        <!-- 板块1: 记录小时的米米时刻 -->
+        <section id="moments" class="timeline-section">
+            <div class="section-title">
+                <h2>记录小时的米米时刻</h2>
+            </div>
+            
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/5503a41d8e4872417a2e1590aaf32364.jpeg" alt="小时">
+                    </div>
+                    <div class="moment-user">
+                        <h3>小时</h3>
+                        <div class="moment-time">2024年11月15日 · 傍晚</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>今天我和阿鑫在一起一个多月了，官宣咯~ </p>
+                </div>
+                <div class="moment-images">
+                    <!-- 第一张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/1/1.png" alt="官宣照片1">
+                    </div>
+                    <!-- 第二张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/1/2.png" alt="官宣照片2">
+                    </div>
+                    <!-- 第三张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/1/3.png" alt="官宣照片3">
+                    </div>
+                    <!-- 可以继续添加更多图片... -->
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 18
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 9
+                    </div>
+                </div>
+            </div>
+            
+
+
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/2C46A6ED17C3FBD90C74883AB4DA2694.jpg" alt="小时">
+                    </div>
+                    <div class="moment-user">
+                        <h3>阿鑫</h3>
+                        <div class="moment-time">2024年11月10日 · 傍晚20:45</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>记不得在哪里了，上海反正，新怡看到告诉我一下 </p>
+                </div>
+                <div class="moment-images">
+                    <!-- 第一张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/2/1.png" alt="天台">
+                    </div>
+                   
+                    <!-- 可以继续添加更多图片... -->
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 23
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 0
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/2C46A6ED17C3FBD90C74883AB4DA2694.jpg" alt="小时">
+                    </div>
+                    <div class="moment-user">
+                        <h3>阿鑫</h3>
+                        <div class="moment-time">2024年11月15日 · 傍晚</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>第一次牵手手，好吧，其实下午就牵了，怎样呢，还不是我魅力大大呀，哈哈哈~ </p>
+                </div>
+                <div class="moment-images">
+                    <!-- 第一张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/3/1.png" alt="官宣照片1">
+                    </div>
+               
+                    <!-- 可以继续添加更多图片... -->
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 26
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 2
+                    </div>
+                </div>
+            </div>
+
+
+            
+        </section>
+        
+        <!-- 板块2: 我和小时的甜蜜时光 -->
+        <section id="sweet" class="timeline-section">
+            <div class="section-title">
+                <h2>我和小时的甜蜜时光</h2>
+            </div>
+            
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/3.png" alt="小时">
+                    </div>
+                    <div class="moment-user">
+                        <h3>章鱼鑫@🐙♥</h3>
+                        <div class="moment-time">2024年11月15日 · 傍晚</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>亲爱的新怡，见字如晤，展信舒颜~ </p>
+                </div>
+                <div class="moment-images">
+                    <!-- 第一张图片 -->
+                    <div class="moment-image">
+                        <img src="/assets/photos/1.png" alt="官宣照片1">
+                    </div>
+                <div class="moment-image">
+                        <img src="/assets/photos/2.png" alt="官宣照片1">
+                    </div>
+
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 23
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 5
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        
+        <!-- 板块3: 阿鑫有话要说 -->
+        <section id="thoughts" class="timeline-section">
+            <div class="section-title">
+                <h2>阿鑫有话要说</h2>
+            </div>
+            
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/4.png" alt="阿鑫">
+                    </div>
+                    <div class="moment-user">
+                        <h3>阿鑫</h3>
+                        <div class="moment-time">2025年7月5日 · 深夜</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>今天看到小时在厨房忙碌的背影，突然很感动。我们在一起已经272天了，每一天都让我更加确定，你就是我想要共度余生的人。</p>
+                    
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 78
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 9
+                    </div>
+                </div>
+            </div>
+            
+            <div class="moment-card">
+                <div class="moment-header">
+                    <div class="moment-avatar">
+                        <img src="/assets/photos/5.png" alt="阿鑫">
+                    </div>
+                    <div class="moment-user">
+                        <h3>阿鑫</h3>
+                        <div class="moment-time">2023年7月6日 · 凌晨</div>
+                    </div>
+                </div>
+                <div class="moment-content">
+                    <p>帅哥也就养养眼，真过日子还得是我这种真诚的屌丝。</p>
+                    
+                </div>
+                <div class="moment-images">
+                    <div class="moment-image">
+                        <img src="/assets/photos/5.png" alt="温暖的家">
+                    </div>
+                </div>
+                <div class="moment-actions">
+                    <div class="action-btn">
+                        <i class="far fa-heart"></i> 95
+                    </div>
+                    <div class="action-btn">
+                        <i class="far fa-comment"></i> 18
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 板块4: 留言 -->
+        <section id="comments" class="timeline-section">
+            <div class="section-title">
+                <h2>留言</h2>
+            </div>
+            
+            <div class="comment-section">
+                <div class="comment-form">
+                    <h3>留下你的祝福</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">你的名字</label>
+                            <input type="text" id="name" placeholder="请输入你的名字">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">你想说的话</label>
+                            <textarea id="message" placeholder="写下你对我们的祝福..."></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">发送祝福</button>
+                    </form>
+                </div>
+                
+                <div class="comments-container">
+                    <h3>评论区</h3>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" alt="小明">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-author">小明</div>
+                                <div class="comment-time">2025年6月18日</div>
+                            </div>
+                            <div class="comment-text">
+                                哇，你们的爱情故事太甜了！看着你们一路走来，真的很为你们开心，祝永远幸福！
+                                什么时候出一期杰哥的故事啊？我也想听听他的爱情经历！
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" alt="小美">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-author">小美</div>
+                                <div class="comment-time">2025年8月29日</div>
+                            </div>
+                            <div class="comment-text">
+                                女孩子真的好漂亮了！zyx真是有福气，能找到这么贤惠的女朋友。祝你们七夕快乐，永远甜蜜！
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" alt="小李">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-author">小李</div>
+                                <div class="comment-time">2023年8月10日</div>
+                            </div>
+                            <div class="comment-text">
+                                从大学到现在，看着你们从相识到相爱，真的很羡慕你们的感情。希望你们早日修成正果，等着喝喜酒哦！
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="love-footer">
+        <div class="container">
+            <div class="anniversary">在一起 272 天</div>
+            <p>时光静好，与君语；细水流年，与君同</p>
+            <div class="copyright">© 2025 阿鑫和小时的小时光 | 记录我们的甜蜜点滴</div>
+        </div>
+    </footer>
+    
+    <script>
+        // 平滑滚动到锚点
+        document.querySelectorAll('.timeline-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 更新活动状态
+                document.querySelectorAll('.timeline-nav a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // 滚动到目标位置
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 点赞功能
+        document.querySelectorAll('.action-btn .fa-heart').forEach(heart => {
+            heart.addEventListener('click', function() {
+                if (this.classList.contains('far')) {
+                    this.classList.remove('far');
+                    this.classList.add('fas', 'liked');
+                    
+                    // 简单的点赞数增加
+                    const countElement = this.parentElement;
+                    let count = parseInt(countElement.textContent);
+                    countElement.textContent = count + 1;
+                    
+                    // 添加动画效果
+                    this.style.animation = 'heartbeat 0.6s';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 600);
+                } else {
+                    this.classList.remove('fas', 'liked');
+                    this.classList.add('far');
+                    
+                    // 点赞数减少
+                    const countElement = this.parentElement;
+                    let count = parseInt(countElement.textContent);
+                    countElement.textContent = count - 1;
+                }
+            });
+        });
+        
+        // 表单提交处理
+        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+            
+            if (name && message) {
+                alert(`谢谢你的祝福，${name}！你的留言已提交。`);
+                document.getElementById('name').value = '';
+                document.getElementById('message').value = '';
+            } else {
+                alert('请填写名字和祝福语！');
+            }
+        });
+    </script>
+</body>
+</html>
