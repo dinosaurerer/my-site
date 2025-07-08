@@ -9,8 +9,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     // ============= 配置项 =============
     const config = {
-        // Base64 编码后的密码（真实密码是 "mySecret123"）
-        correctPassword: btoa("mySecret123"), 
+        // Base64 编码后的密码（真实密码是 "yxy241007"）
+        correctPassword: btoa("yxy241007"), 
         maxAttempts: 3,                      // 最大尝试次数
         redirectUrl: "articles.html",        // 跳转目标
         tokenKey: "article_access_token",    // SessionStorage 密钥
