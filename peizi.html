@@ -249,7 +249,40 @@
             border-top: 1px solid #eee;
             margin-top: 20px;
         }
+
+
+        .event-header {
+            cursor: pointer; /* 添加手型光标表示可点击 */
+            user-select: none; /* 防止文字被选中 */
+        }
+
+        .event-content {
+            max-height: 1000px; /* 设置一个足够大的值 */
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .event-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .collapse-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .event-header:hover .collapse-btn {
+            transform: translateY(-50%) scale(1.1);
+        }
         
+
         @media (max-width: 768px) {
             .events-grid {
                 grid-template-columns: 1fr;
@@ -273,6 +306,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《又甜又御》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -353,6 +389,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《初入圣境》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -378,6 +417,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《四季苏汇》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -410,6 +452,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《白沫事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -442,6 +487,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《压力闹钟》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -482,6 +530,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《没叫事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -514,6 +565,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《肌肉变异》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -546,6 +600,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《天赋》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -578,6 +635,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《握拍事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -626,6 +686,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《吃鱼事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -650,6 +713,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《老李逃窜事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="context">【339+z+y+p+l】</div>
@@ -706,6 +772,9 @@
             <div class="event-card">
                 <div class="event-header">
                     <h2 class="event-title">《电梯fp事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
                 </div>
                 <div class="event-content">
                     <div class="dialogue">
@@ -799,9 +868,14 @@
         
         // 为每个按钮添加点击事件
         collapseBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                // 找到对应的内容区域
-                const content = this.closest('.event-card').querySelector('.event-content');
+            // 找到对应的内容区域
+            const content = btn.closest('.event-card').querySelector('.event-content');
+            
+            // 默认折叠所有卡片
+            content.classList.add('collapsed');
+            
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止事件冒泡
                 
                 // 切换折叠状态
                 content.classList.toggle('collapsed');
@@ -815,6 +889,15 @@
                     icon.classList.remove('fa-chevron-up');
                     icon.classList.add('fa-chevron-down');
                 }
+            });
+        });
+
+        // 点击整个header也可以切换折叠状态
+        const eventHeaders = document.querySelectorAll('.event-header');
+        eventHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const btn = this.querySelector('.collapse-btn');
+                btn.click(); // 触发按钮点击事件
             });
         });
 
