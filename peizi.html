@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>胚胚纪实·合订本</title>
     <style>
         :root {
@@ -736,9 +737,15 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="commentbox"></div>
+        <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
+        <script>commentBox('5668095377014784-proj')</script>
+
         
         <div class="footer">
-            <p>最终解释器归pp所有 &copy; 2025</p>
+            <p>最终解释权归pp所有 &copy; 2025</p>
         </div>
     </div>
 
@@ -773,6 +780,12 @@
     .scroll-to-top:hover {
         background: var(--accent);
         transform: translateY(-5px);
+    }
+
+    /* 新增：确保图标居中显示 */
+    .scroll-to-top i {
+        margin: 0;
+        padding: 0;
     }
 </style>
 
@@ -858,22 +871,23 @@
         }, 100);
     });
 
-    // 添加返回顶部按钮
-    window.addEventListener('scroll', function() {
-        const scrollBtn = document.querySelector('.scroll-to-top');
-        if (window.scrollY > 300) {
-            scrollBtn.style.opacity = 1;
-            scrollBtn.style.visibility = 'visible';
-        } else {
-            scrollBtn.style.opacity = 0;
-            scrollBtn.style.visibility = 'hidden';
-        }
-    });
-
-    // 返回顶部函数
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+        // 添加返回顶部按钮
+        window.addEventListener('scroll', function() {
+            const scrollBtn = document.querySelector('.scroll-to-top');
+            if (window.scrollY > 300) {
+                scrollBtn.style.opacity = 1;
+                scrollBtn.style.visibility = 'visible';
+            } else {
+                scrollBtn.style.opacity = 0;
+                scrollBtn.style.visibility = 'hidden';
+            }
         });
-    }
+
+        // 返回顶部函数
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
