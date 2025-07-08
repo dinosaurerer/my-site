@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&display=swap" rel="stylesheet">
+    <script>
+        // 检查 SessionStorage 中是否有令牌
+        if (!sessionStorage.getItem("article_access_token")) {
+            window.location.href = "index.html"; // 跳回首页
+        }
+
+        // 可选：离开页面时清除令牌（防止浏览器后退绕过）
+        window.addEventListener("beforeunload", () => {
+            sessionStorage.removeItem("article_access_token");
+        });
+    </script>
     <style>
         :root {
             --primary: #FFB7C5; /* 樱花粉 */
