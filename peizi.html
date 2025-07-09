@@ -297,12 +297,78 @@
             }
         }
     </style>
+    <style>
+        /* 搜索框样式 */
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #3498db;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        #search-input:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        /* 搜索结果高亮 */
+        .highlight {
+            background-color: #ffeaa7;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* 新增：搜索隐藏状态 */
+        .event-card[data-search-hidden="true"] {
+            display: none !important;
+        }
+
+        /* 确保折叠动画不受影响 */
+        .event-content {
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜索事件或对话内容...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <div class="no-results" id="no-results">没有找到匹配的结果 😢</div>
+
+
+
         <header>
-            <h1>胚胚事件记录</h1>
-            <p class="subtitle">记录胚胚与朋友间的趣事、对话和难忘瞬间</p>
+            <h1>胚胚纪实</h1>
+            <p class="subtitle">记录胚胚与苏畜，张楚，杰除，杨÷，李处间的趣事、对话和难忘瞬间</p>
         </header>
         
         <div class="events-grid">
@@ -967,6 +1033,128 @@
         </div>
     </div>
 
+       <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('search-input');
+                const eventCards = document.querySelectorAll('.event-card');
+                const noResults = document.getElementById('no-results');
+                
+                // 保存原始HTML内容和折叠状态
+                const originalContents = new Map();
+                const originalCollapseStates = new Map();
+                
+                // 初始化：记录所有卡片的原始状态
+                eventCards.forEach(card => {
+                    originalContents.set(card, card.innerHTML);
+                    const content = card.querySelector('.event-content');
+                    originalCollapseStates.set(card, content.classList.contains('collapsed'));
+                });
+
+                // 高亮匹配文本的函数（不在DOMContentLoaded时自动执行）
+                function safeHighlight(element, term) {
+                    const walker = document.createTreeWalker(
+                        element, 
+                        NodeFilter.SHOW_TEXT, 
+                        null, 
+                        false
+                    );
+                    
+                    const regex = new RegExp(term, 'gi');
+                    const replacements = [];
+                    
+                    let node;
+                    while (node = walker.nextNode()) {
+                        if (node.nodeType === Node.TEXT_NODE && regex.test(node.nodeValue)) {
+                            const span = document.createElement('span');
+                            span.className = 'highlight';
+                            span.textContent = node.nodeValue;
+                            replacements.push({ node, span });
+                        }
+                    }
+                    
+                    replacements.forEach(({ node, span }) => {
+                        node.parentNode.replaceChild(span, node);
+                    });
+                }
+
+                function performSearch() {
+                    const searchTerm = searchInput.value.trim().toLowerCase();
+                    let hasResults = false;
+                    
+                    eventCards.forEach(card => {
+                        // 恢复原始内容（防止重复高亮破坏DOM）
+                        card.innerHTML = originalContents.get(card);
+                        
+                        // 恢复原始折叠状态
+                        const content = card.querySelector('.event-content');
+                        const shouldBeCollapsed = originalCollapseStates.get(card);
+                        const icon = card.querySelector('.collapse-btn i');
+                        
+                        if (shouldBeCollapsed) {
+                            content.classList.add('collapsed');
+                            icon.classList.remove('fa-chevron-down');
+                            icon.classList.add('fa-chevron-up');
+                        } else {
+                            content.classList.remove('collapsed');
+                            icon.classList.remove('fa-chevron-up');
+                            icon.classList.add('fa-chevron-down');
+                        }
+                        
+                        const cardContent = card.textContent.toLowerCase();
+                        const cardTitle = card.querySelector('.event-title').textContent.toLowerCase();
+                        const isMatch = searchTerm === '' || 
+                                    cardContent.includes(searchTerm) || 
+                                    cardTitle.includes(searchTerm);
+                        
+                        // 控制显示/隐藏
+                        card.style.display = isMatch ? 'block' : 'none';
+                        if (isMatch) hasResults = true;
+                        
+                        // 仅在搜索时有匹配内容时高亮文本
+                        if (searchTerm && isMatch) {
+                            safeHighlight(card, searchTerm);
+                        }
+                    });
+                    
+                    noResults.style.display = hasResults ? 'none' : 'block';
+                    
+                    // 重新绑定折叠按钮事件
+                    rebindCollapseButtons();
+                }
+
+                // 重新绑定折叠按钮（解决事件丢失问题）
+                function rebindCollapseButtons() {
+                    document.querySelectorAll('.collapse-btn').forEach(btn => {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const content = this.closest('.event-card').querySelector('.event-content');
+                            content.classList.toggle('collapsed'); 
+                            
+                            const icon = this.querySelector('i');
+                            icon.classList.toggle('fa-chevron-up');
+                            icon.classList.toggle('fa-chevron-down');
+                            
+                            // 更新原始状态记录
+                            const card = this.closest('.event-card');
+                            originalCollapseStates.set(card, content.classList.contains('collapsed'));
+                        });
+                    });
+                }
+
+                // 初始化折叠按钮
+                rebindCollapseButtons();
+                
+                // 搜索事件
+                searchInput.addEventListener('input', () => {
+                    performSearch();
+                });
+            });
+        </script>
+
+
+
+</body>
+
 
 <button class="scroll-to-top" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
@@ -1008,6 +1196,8 @@
 </style>
 
     <script>
+
+
 
 
         // 添加简单的交互动画
