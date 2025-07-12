@@ -29,6 +29,7 @@
             color: var(--dark);
             padding: 20px;
             min-height: 100vh;
+            transition: opacity 0.5s;
         }
         
         .container {
@@ -83,6 +84,14 @@
             box-shadow: var(--shadow);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        .event-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
         
         .event-card:hover {
@@ -95,6 +104,8 @@
             background: var(--primary);
             color: white;
             position: relative;
+            cursor: pointer;
+            user-select: none;
         }
         
         .event-header::after {
@@ -115,6 +126,30 @@
         
         .event-content {
             padding: 25px 20px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .event-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        
+        .collapse-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .event-header:hover .collapse-btn {
+            transform: translateY(-50%) scale(1.1);
         }
         
         .dialogue {
@@ -138,6 +173,7 @@
             font-weight: bold;
             color: white;
             font-size: 1.1rem;
+            transition: transform 0.3s;
         }
         
         .peizi {
@@ -173,6 +209,7 @@
             position: relative;
             flex-grow: 1;
             border: 1px solid #e1e8ed;
+            transition: transform 0.3s;
         }
         
         .bubble::before {
@@ -254,50 +291,6 @@
             margin-top: 20px;
         }
 
-
-        .event-header {
-            cursor: pointer; /* 添加手型光标表示可点击 */
-            user-select: none; /* 防止文字被选中 */
-        }
-
-        .event-content {
-            max-height: 1000px; /* 设置一个足够大的值 */
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-        }
-
-        .event-content.collapsed {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        .collapse-btn {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .event-header:hover .collapse-btn {
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-
-        @media (max-width: 768px) {
-            .events-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .event-title {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
-    <style>
         /* 搜索框样式 */
         .search-container {
             margin: 20px auto;
@@ -313,7 +306,7 @@
             font-size: 16px;
             outline: none;
             transition: all 0.3s;
-            font-family: 'Noto Sans SC', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         #search-input:focus {
@@ -354,6 +347,50 @@
         .event-content {
             transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
         }
+        
+        /* 返回顶部按钮 */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .scroll-to-top:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        /* 新增：确保图标居中显示 */
+        .scroll-to-top i {
+            margin: 0;
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-title {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -363,8 +400,6 @@
             <i class="fas fa-search search-icon"></i>
         </div>
         <div class="no-results" id="no-results">没有找到匹配的结果 😢</div>
-
-
 
         <header>
             <h1>胚胚纪实</h1>
@@ -884,7 +919,7 @@
                         <i class="fas fa-chevron-up"></i>
                     </div>
                 </div>
-                <div class="event-content collapsed">
+                <div class="event-content">
                     <div class="context">
                         （呸呸在群里分享了一个b站视频：100分的生殖器长啥样，对照一下自己的吧!）
                     </div>
@@ -930,7 +965,7 @@
                         <i class="fas fa-chevron-up"></i>
                     </div>
                 </div>
-                <div class="event-content collapsed">
+                <div class="event-content">
                     <div class="context">
                         （一次唱k，苏张杨呸）
                     </div>
@@ -989,7 +1024,7 @@
                         <i class="fas fa-chevron-up"></i>
                     </div>
                 </div>
-                <div class="event-content collapsed">
+                <div class="event-content">
                     <div class="context">
                         （大一那会儿张和杰和袁三人打PUBG后,游戏结束，语音软件kook并未退出...）
                     </div>
@@ -1021,8 +1056,6 @@
             </div>
             
         </div>
-
-
         <div class="commentbox"></div>
         <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
         <script>commentBox('5668095377014784-proj')</script>
@@ -1033,278 +1066,109 @@
         </div>
     </div>
 
-       <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('search-input');
-                const eventCards = document.querySelectorAll('.event-card');
-                const noResults = document.getElementById('no-results');
-                
-                // 保存原始HTML内容和折叠状态
-                const originalContents = new Map();
-                const originalCollapseStates = new Map();
-                
-                // 初始化：记录所有卡片的原始状态
-                eventCards.forEach(card => {
-                    originalContents.set(card, card.innerHTML);
-                    const content = card.querySelector('.event-content');
-                    originalCollapseStates.set(card, content.classList.contains('collapsed'));
-                });
-
-                // 高亮匹配文本的函数（不在DOMContentLoaded时自动执行）
-                function safeHighlight(element, term) {
-                    const walker = document.createTreeWalker(
-                        element, 
-                        NodeFilter.SHOW_TEXT, 
-                        null, 
-                        false
-                    );
-                    
-                    const regex = new RegExp(term, 'gi');
-                    const replacements = [];
-                    
-                    let node;
-                    while (node = walker.nextNode()) {
-                        if (node.nodeType === Node.TEXT_NODE && regex.test(node.nodeValue)) {
-                            const span = document.createElement('span');
-                            span.className = 'highlight';
-                            span.textContent = node.nodeValue;
-                            replacements.push({ node, span });
-                        }
-                    }
-                    
-                    replacements.forEach(({ node, span }) => {
-                        node.parentNode.replaceChild(span, node);
-                    });
-                }
-
-                function performSearch() {
-                    const searchTerm = searchInput.value.trim().toLowerCase();
-                    let hasResults = false;
-                    
-                    eventCards.forEach(card => {
-                        // 恢复原始内容（防止重复高亮破坏DOM）
-                        card.innerHTML = originalContents.get(card);
-                        
-                        // 恢复原始折叠状态
-                        const content = card.querySelector('.event-content');
-                        const shouldBeCollapsed = originalCollapseStates.get(card);
-                        const icon = card.querySelector('.collapse-btn i');
-                        
-                        if (shouldBeCollapsed) {
-                            content.classList.add('collapsed');
-                            icon.classList.remove('fa-chevron-down');
-                            icon.classList.add('fa-chevron-up');
-                        } else {
-                            content.classList.remove('collapsed');
-                            icon.classList.remove('fa-chevron-up');
-                            icon.classList.add('fa-chevron-down');
-                        }
-                        
-                        const cardContent = card.textContent.toLowerCase();
-                        const cardTitle = card.querySelector('.event-title').textContent.toLowerCase();
-                        const isMatch = searchTerm === '' || 
-                                    cardContent.includes(searchTerm) || 
-                                    cardTitle.includes(searchTerm);
-                        
-                        // 控制显示/隐藏
-                        card.style.display = isMatch ? 'block' : 'none';
-                        if (isMatch) hasResults = true;
-                        
-                        // 仅在搜索时有匹配内容时高亮文本
-                        if (searchTerm && isMatch) {
-                            safeHighlight(card, searchTerm);
-                        }
-                    });
-                    
-                    noResults.style.display = hasResults ? 'none' : 'block';
-                    
-                    // 重新绑定折叠按钮事件
-                    rebindCollapseButtons();
-                }
-
-                // 重新绑定折叠按钮（解决事件丢失问题）
-                function rebindCollapseButtons() {
-                    document.querySelectorAll('.collapse-btn').forEach(btn => {
-                        btn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            const content = this.closest('.event-card').querySelector('.event-content');
-                            content.classList.toggle('collapsed'); 
-                            
-                            const icon = this.querySelector('i');
-                            icon.classList.toggle('fa-chevron-up');
-                            icon.classList.toggle('fa-chevron-down');
-                            
-                            // 更新原始状态记录
-                            const card = this.closest('.event-card');
-                            originalCollapseStates.set(card, content.classList.contains('collapsed'));
-                        });
-                    });
-                }
-
-                // 初始化折叠按钮
-                rebindCollapseButtons();
-                
-                // 搜索事件
-                searchInput.addEventListener('input', () => {
-                    performSearch();
-                });
-            });
-        </script>
-
-
-
-</body>
-
-
-<button class="scroll-to-top" onclick="scrollToTop()">
-    <i class="fas fa-arrow-up"></i>
-</button>
-
-<style>
-    .scroll-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--primary);
-        color: white;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 999;
-    }
-    
-    .scroll-to-top:hover {
-        background: var(--accent);
-        transform: translateY(-5px);
-    }
-
-    /* 新增：确保图标居中显示 */
-    .scroll-to-top i {
-        margin: 0;
-        padding: 0;
-    }
-</style>
+    <!-- 返回顶部按钮 -->
+    <button class="scroll-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script>
-
-
-
-
-        // 添加简单的交互动画
-    document.addEventListener('DOMContentLoaded', function() {
-        // 获取所有折叠按钮
-        const collapseBtns = document.querySelectorAll('.collapse-btn');
-        
-        // 为每个按钮添加点击事件
-        collapseBtns.forEach(btn => {
-            // 找到对应的内容区域
-            const content = btn.closest('.event-card').querySelector('.event-content');
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始显示所有卡片
+            setTimeout(() => {
+                document.querySelectorAll('.event-card').forEach(card => {
+                    card.classList.add('visible');
+                });
+                document.body.style.opacity = 1;
+            }, 100);
             
-            // 默认折叠所有卡片
-            content.classList.add('collapsed');
+            // 折叠功能实现
+            document.querySelectorAll('.collapse-btn, .event-header').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    const header = this.closest('.event-header');
+                    if (!header) return;
+                    
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.collapse-btn i');
+                    
+                    if (content && content.classList.contains('event-content')) {
+                        content.classList.toggle('collapsed');
+                        
+                        if (icon) {
+                            if (content.classList.contains('collapsed')) {
+                                icon.classList.remove('fa-chevron-down');
+                                icon.classList.add('fa-chevron-up');
+                            } else {
+                                icon.classList.remove('fa-chevron-up');
+                                icon.classList.add('fa-chevron-down');
+                            }
+                        }
+                    }
+                });
+            });
             
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation(); // 防止事件冒泡
+            // 添加头像悬停效果
+            const avatars = document.querySelectorAll('.avatar');
+            avatars.forEach(avatar => {
+                avatar.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                });
                 
-                // 切换折叠状态
-                content.classList.toggle('collapsed');
+                avatar.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0)';
+                });
+            });
+            
+            // 添加气泡悬停效果
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                });
                 
-                // 切换按钮图标
-                const icon = this.querySelector('i');
-                if (content.classList.contains('collapsed')) {
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-up');
+                bubble.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+            
+            // 搜索功能实现
+            const searchInput = document.getElementById('search-input');
+            const eventCards = document.querySelectorAll('.event-card');
+            const noResults = document.getElementById('no-results');
+            
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                let hasResults = false;
+                
+                eventCards.forEach(card => {
+                    const cardContent = card.textContent.toLowerCase();
+                    const cardTitle = card.querySelector('.event-title').textContent.toLowerCase();
+                    const isMatch = searchTerm === '' || 
+                                cardContent.includes(searchTerm) || 
+                                cardTitle.includes(searchTerm);
+                    
+                    // 控制显示/隐藏
+                    card.style.display = isMatch ? 'block' : 'none';
+                    if (isMatch) hasResults = true;
+                });
+                
+                noResults.style.display = hasResults ? 'none' : 'block';
+            });
+            
+            // 返回顶部按钮显示逻辑
+            window.addEventListener('scroll', function() {
+                const scrollBtn = document.querySelector('.scroll-to-top');
+                if (window.scrollY > 300) {
+                    scrollBtn.style.opacity = 1;
+                    scrollBtn.style.visibility = 'visible';
                 } else {
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
+                    scrollBtn.style.opacity = 0;
+                    scrollBtn.style.visibility = 'hidden';
                 }
             });
         });
-
-        // 点击整个header也可以切换折叠状态
-        const eventHeaders = document.querySelectorAll('.event-header');
-        eventHeaders.forEach(header => {
-            header.addEventListener('click', function() {
-                const btn = this.querySelector('.collapse-btn');
-                btn.click(); // 触发按钮点击事件
-            });
-        });
-
-        // 添加滚动动画
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // 观察所有事件卡片
-        const eventCards = document.querySelectorAll('.event-card');
-        eventCards.forEach(card => {
-            card.style.opacity = 0;
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            observer.observe(card);
-        });
-
-        // 添加头像悬停效果
-        const avatars = document.querySelectorAll('.avatar');
-        avatars.forEach(avatar => {
-            avatar.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.1) rotate(5deg)';
-            });
-            
-            avatar.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1) rotate(0)';
-            });
-        });
-
-        // 添加气泡悬停效果
-        const bubbles = document.querySelectorAll('.bubble');
-        bubbles.forEach(bubble => {
-            bubble.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateX(5px)';
-            });
-            
-            bubble.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateX(0)';
-            });
-        });
-
-        // 添加页面加载动画
-        setTimeout(() => {
-            document.body.style.opacity = 1;
-        }, 100);
-    });
-
-        // 添加返回顶部按钮
-        window.addEventListener('scroll', function() {
-            const scrollBtn = document.querySelector('.scroll-to-top');
-            if (window.scrollY > 300) {
-                scrollBtn.style.opacity = 1;
-                scrollBtn.style.visibility = 'visible';
-            } else {
-                scrollBtn.style.opacity = 0;
-                scrollBtn.style.visibility = 'hidden';
-            }
-        });
-
+        
         // 返回顶部函数
         function scrollToTop() {
             window.scrollTo({
@@ -1313,3 +1177,5 @@
             });
         }
     </script>
+</body>
+</html>
