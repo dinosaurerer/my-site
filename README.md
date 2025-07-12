@@ -41,7 +41,7 @@ DINOSAUR/
   - OpenCV人脸马赛克系统
 - 侧边栏展示个人信息和GitHub项目
 
-  <img src="demo/4.png" width="100%" alt="系统主界面">
+  <img src="demo/index.png" width="100%" alt="系统主界面">
 
 ### 2. 文章列表 (articles.html)
 - 加密访问的技术文章合集
