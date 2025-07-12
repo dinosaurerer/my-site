@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>胚胚纪实·合订本</title>
+    <!-- 引入 SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 页面访问验证
+        (function() {
+            // 获取当前页面文件名
+            const currentPage = window.location.pathname.split('/').pop();
+            // 检查访问令牌
+            if (!sessionStorage.getItem("access_token_" + currentPage)) {
+                // 显示提示后跳转回首页
+                Swal.fire({
+                    icon: "error",
+                    title: "访问受限",
+                    text: "请从首页验证后访问",
+                    confirmButtonText: "返回首页",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "index.html";
+                });
+            }
+        })();
+    </script>
     <style>
         :root {
             --primary: #3498db;
