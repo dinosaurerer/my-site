@@ -4,18 +4,21 @@
  * 1. 点击文章链接弹出密码输入框
  * 2. 验证通过后存储 sessionStorage 令牌
  * 3. 3次错误尝试后锁定
+ * 4. 支持多页面加密
  */
 
 document.addEventListener("DOMContentLoaded", function() {
     // ============= 配置项 =============
     const config = {
-        // Base64 编码后的密码（真实密码是 "yxy241007"）
-        correctPassword: btoa("yxy241007"), 
+        passwords: {
+            // 各页面对应的密码(Base64编码)
+            "articles.html": btoa("yxy241007"),  // 文章页面密码
+            "peizi.html": btoa("1500")       // 胚胚纪实页面密码
+        },
         maxAttempts: 3,                      // 最大尝试次数
-        redirectUrl: "articles.html",        // 跳转目标
-        tokenKey: "article_access_token",    // SessionStorage 密钥
+        tokenPrefix: "access_token_",        // SessionStorage 密钥前缀
         swalOptions: {                       // SweetAlert2 配置
-            title: "🔒 文章栏目已加密",
+            title: "🔒 内容已加密",
             input: "password",
             inputPlaceholder: "请输入访问密码",
             showCancelButton: true,
@@ -28,15 +31,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // ============= 初始化 =============
     let attempts = 0; // 当前尝试次数
+    let currentPage = ""; // 当前尝试访问的页面
 
-    // ============= 绑定文章链接点击事件 =============
-    const articleLink = document.querySelector('a[href*="articles.html"]');
-    if (articleLink) {
-        articleLink.addEventListener("click", function(e) {
+    // ============= 绑定加密链接点击事件 =============
+    const protectedLinks = document.querySelectorAll('a[href*="articles.html"], a[href*="peizi.html"]');
+    protectedLinks.forEach(link => {
+        link.addEventListener("click", function(e) {
             e.preventDefault(); // 阻止默认跳转
+            currentPage = link.getAttribute('href').split('/').pop(); // 获取文件名
             checkPassword();
         });
-    }
+    });
 
     // ============= 密码验证函数 =============
     async function checkPassword() {
@@ -59,9 +64,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (inputPassword === undefined) return;
 
         // 验证密码（对比 Base64 编码值）
-        if (btoa(inputPassword) === config.correctPassword) {
+        if (btoa(inputPassword) === config.passwords[currentPage]) {
             // 1. 存储访问令牌
-            sessionStorage.setItem(config.tokenKey, "true");
+            sessionStorage.setItem(config.tokenPrefix + currentPage, "true");
             
             // 2. 显示成功提示
             await Swal.fire({
@@ -73,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             // 3. 跳转到目标页
-            window.location.href = config.redirectUrl;
+            window.location.href = currentPage;
         } else {
             // 密码错误处理
             attempts++;
