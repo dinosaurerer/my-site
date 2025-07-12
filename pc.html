@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四季苏汇足道SPA | 客服</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5a8fd9;
+            --secondary: #6bc0ff;
+            --accent: #85d7ff;
+            --light: #f8fafc;
+            --light-gray: #eef2f6;
+            --dark-gray: #4a5568;
+            --text: #2d3748;
+            --shadow: 0 10px 20px rgba(0,0,0,0.08);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f7ff, #e6f7ff);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 30px auto 0;
+            line-height: 1.7;
+            color: var(--dark-gray);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+        
+        /* 标签导航 */
+        .tabs-container {
+            margin: 40px auto;
+            max-width: 95%;
+            position: relative;
+        }
+        
+        .tabs {
+            background: white;
+            border-radius: 15px;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            height: 80%;
+            top: 10%;
+            border-radius: 12px;
+            background: var(--accent);
+            transition: var(--transition);
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(91, 143, 217, 0.2);
+        }
+        
+        .tab-btn {
+            padding: 14px 36px;
+            margin: 0 4px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tab-btn i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .tab-btn.active, .tab-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* 内容部分 */
+        .section-container {
+            margin: 50px 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin: 0 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+            position: relative;
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+        }
+        
+        .section-title i {
+            margin-right: 15px;
+            color: var(--secondary);
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .item {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transform: translateY(0);
+            transition: var(--transition);
+            position: relative;
+            height: 300px;
+            background: var(--light);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            z-index: 2;
+            border-color: var(--accent);
+        }
+        
+        .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        
+        .item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .video-item {
+            position: relative;
+        }
+        
+        .video-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s;
+            z-index: 2;
+            backdrop-filter: blur(2px);
+        }
+
+        .video-overlay i {
+            font-size: 5rem;
+            color: rgba(255,255,255,0.8);
+            text-shadow: 0 0 20px rgba(0,0,0,0.7);
+            transition: all 0.3s;
+            background: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .video-overlay:hover i {
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        /* 视频播放时隐藏覆盖层 */
+        .video-item.playing .video-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark-gray);
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            z-index: 3;
+            font-weight: 500;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        /* 视频控制条 */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .video-item:hover .video-controls {
+            opacity: 1;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        
+        .control-btn:hover {
+            color: var(--secondary);
+            background: rgba(255,255,255,0.2);
+        }
+
+        
+        .progress-container {
+            flex-grow: 1;
+            height: 5px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            margin: 0 15px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            font-size: 1.4rem;
+            color: var(--dark-gray);
+            background: var(--light);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid var(--light-gray);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        @media (max-width: 992px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .item {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tab-btn {
+                padding: 12px 25px;
+                font-size: 1.1rem;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 15px;
+            }
+            
+            .item {
+                height: 220px;
+            }
+            
+            .video-overlay i {
+                font-size: 3.5rem;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .tabs {
+                border-radius: 12px;
+                padding: 6px;
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 1rem;
+                margin: 4px;
+                flex: 1 0 calc(50% - 8px);
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+                padding: 15px;
+            }
+            
+            .section-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-images"></i> 类人群星闪耀时</h1>
+            <p class="description">
+
+              <strong>四季苏汇足道SPA ：</strong>  <strong>小杰 小军 小李 小苏 小袁</strong>
+
+</p>
+        </header>
+        
+        <!-- 标签导航栏 -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab-indicator" id="indicator"></div>
+                <button class="tab-btn active" data-tag="杰"><i class="fas fa-crown"></i> 杰</button>
+                <button class="tab-btn" data-tag="军"><i class="fas fa-shield-alt"></i> 军</button>
+                <button class="tab-btn" data-tag="李"><i class="fas fa-tree"></i> 李</button>
+                <button class="tab-btn" data-tag="苏"><i class="fas fa-feather"></i> 苏</button>
+                <button class="tab-btn" data-tag="袁"><i class="fas fa-star"></i> 袁</button>
+            </div>
+        </div>
+        
+        <!-- 图片展示区 -->
+        <div class="section-container">
+            <h2 class="section-title"><i class="fas fa-camera"></i> 照片集锦</h2>
+            <div class="gallery" id="imageGallery">
+                <!-- 图片将通过JS动态加载 -->
+                <div class="item">
+                    <div style="background: linear-gradient(135deg, #a1c4fd, #c2e9fb); height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-image" style="font-size: 4rem; color: #5a8fd9;"></i>
+                    </div>
+                    <div class="item-label">示例图片</div>
+                </div>
+                <div class="item">
+                    <div style="background: linear-gradient(135deg, #d4fc79, #96e6a1); height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-portrait" style="font-size: 4rem; color: #48bb78;"></i>
+                    </div>
+                    <div class="item-label">示例图片</div>
+                </div>
+                <div class="item">
+                    <div style="background: linear-gradient(135deg, #f6d365, #fda085); height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user" style="font-size: 4rem; color: #ed8936;"></i>
+                    </div>
+                    <div class="item-label">示例图片</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 视频展示区 -->
+        <div class="section-container">
+            <h2 class="section-title"><i class="fas fa-video"></i> 视频精选</h2>
+            <div class="gallery" id="videoGallery">
+                <!-- 视频将通过JS动态加载 -->
+                <div class="item video-item">
+                    <div style="background: linear-gradient(135deg, #a8edea, #fed6e3); height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <div class="video-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="item-label">示例视频</div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause"><i class="fas fa-play"></i></button>
+                        <div class="progress-container">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <button class="control-btn fullscreen"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="item video-item">
+                    <div style="background: linear-gradient(135deg, #cd9cf2, #f6f3ff); height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <div class="video-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="item-label">示例视频</div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause"><i class="fas fa-play"></i></button>
+                        <div class="progress-container">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <button class="control-btn fullscreen"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 爆粉孙哥美食群·人物图鉴</p>
+        </footer>
+    </div>
+
+    <script>
+        // 数据模型
+        const galleryData = {
+            "杰": {
+                images: ["jie01.jpg", "jie02.jpg", "jie03.jpg", "jie04.jpg", "jie05.jpg", "jie06.jpg"],
+                videos: ["jie_video01.mp4", "jie_video02.mp4", "jie_video03.mp4"]
+            },
+            "军": {
+                images: ["IMG_1992.JPG", "IMG_3390.PNG", "IMG_20240316_111358.jpg", "IMG_20240524_201541.jpg"],
+                videos: ["ktv.mp4"]
+            },
+            "李": {
+                images: ["IMG_1772.jpg", "IMG_20230610_170301.jpg", "IMG_20230610_190854_edit_65982818201078.jpg", "IMG_20230903_123006.jpg"],
+                videos: []
+            },
+            "苏": {
+                images: ["IMG_1944.PNG", "IMG_1945.PNG", "IMG_1954.jpg", "IMG_1955.jpg", "IMG_1962.jpg", "IMG_4025.jpg", "IMG_20240301_192357.jpg", "IMG_20240606_181320.jpg"],
+                videos: ["suqin.mp4", "VID_20240224_201720.mp4", "VID_20240921_200051.mp4"]
+            },
+            "袁": {
+                images: ["IMG_2268.jpg", "IMG_3389.jpg", "IMG_4026.jpg", "IMG_20230927_132517.jpg", "IMG_20240316_084339.jpg", "IMG_20240316_091717.jpg", "IMG_20240316_104140_1.jpg"],
+                videos: ["VID_20240224_192511.mp4", "VID_20240224_200311.mp4"]
+            }
+        };
+        
+        // DOM元素
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const indicator = document.getElementById('indicator');
+        const imageGallery = document.getElementById('imageGallery');
+        const videoGallery = document.getElementById('videoGallery');
+        
+        // 路径映射
+        const tagToPath = {
+            "杰": "./assets/jie_pho/",
+            "军": "./assets/jun_pho/",
+            "李": "./assets/li_pho/",
+            "苏": "./assets/su_pho/",
+            "袁": "./assets/y_pho/"
+        };
+        
+        // 当前播放的视频元素
+        let currentPlayingVideo = null;
+        
+        // 初始化：显示"杰"的内容
+        displayContent("杰");
+        positionIndicator(document.querySelector('.tab-btn.active'));
+        
+        // 标签切换事件
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 更新活动标签
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // 移动指示器
+                positionIndicator(btn);
+                
+                // 更新内容
+                const tag = btn.dataset.tag;
+                displayContent(tag);
+            });
+        });
+        
+        // 定位指示器
+        function positionIndicator(activeBtn) {
+            indicator.style.width = `${activeBtn.offsetWidth}px`;
+            indicator.style.left = `${activeBtn.offsetLeft}px`;
+        }
+        
+        // 显示当前标签的内容
+        function displayContent(tag) {
+            const data = galleryData[tag];
+            const basePath = tagToPath[tag];
+            
+            // 清空现有内容
+            imageGallery.innerHTML = '';
+            videoGallery.innerHTML = '';
+            
+            // 显示图片
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(img => {
+                    const item = createImageItem(img, basePath, tag);
+                    imageGallery.appendChild(item);
+                });
+            } else {
+                imageGallery.innerHTML = `<div class="empty-message"><i class="fas fa-image"></i> ${tag}的分类暂无照片</div>`;
+            }
+            
+            // 显示视频
+            if (data.videos && data.videos.length > 0) {
+                data.videos.forEach(vid => {
+                    const item = createVideoItem(vid, basePath, tag);
+                    videoGallery.appendChild(item);
+                });
+            } else {
+                videoGallery.innerHTML = `<div class="empty-message"><i class="fas fa-video"></i> ${tag}的分类暂无视频</div>`;
+            }
+        }
+        
+        // 创建图片项目
+        function createImageItem(img, basePath, tag) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            item.innerHTML = `
+                <img src="${basePath}${img}" alt="${tag}的照片">
+                <div class="item-label">${img.replace(/\.[^/.]+$/, "")}</div>
+            `;
+            return item;
+        }
+        
+        // 创建视频项目
+        function createVideoItem(vid, basePath, tag) {
+            const item = document.createElement('div');
+            item.className = 'item video-item';
+            
+            const filename = vid.replace(/\.[^/.]+$/, "");
+            
+            item.innerHTML = `
+                <video>
+                    <source src="${basePath}${vid}" type="video/mp4">
+                </video>
+                <div class="video-overlay">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="item-label">${filename}</div>
+                <div class="video-controls">
+                    <button class="control-btn play-pause"><i class="fas fa-play"></i></button>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <button class="control-btn fullscreen"><i class="fas fa-expand"></i></button>
+                </div>
+            `;
+            
+            const video = item.querySelector('video');
+            const overlay = item.querySelector('.video-overlay');
+            const playBtn = overlay.querySelector('i');
+            const playPauseBtn = item.querySelector('.play-pause');
+            const progressBar = item.querySelector('.progress-bar');
+            const progressContainer = item.querySelector('.progress-container');
+            const fullscreenBtn = item.querySelector('.fullscreen');
+            
+            // 点击覆盖层播放视频
+            overlay.addEventListener('click', () => {
+                playVideo(video);
+            });
+            
+            // 播放/暂停按钮事件
+            playPauseBtn.addEventListener('click', () => {
+                togglePlayPause(video);
+            });
+            
+            // 视频事件监听
+            video.addEventListener('play', () => {
+                item.classList.add('playing');
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            });
+            
+            video.addEventListener('pause', () => {
+                item.classList.remove('playing');
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+            
+            video.addEventListener('ended', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-redo"></i>';
+            });
+            
+            video.addEventListener('timeupdate', () => {
+                const percent = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = `${percent}%`;
+            });
+            
+            // 进度条控制
+            progressContainer.addEventListener('click', (e) => {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                video.currentTime = pos * video.duration;
+            });
+            
+            // 全屏按钮
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    if (item.requestFullscreen) {
+                        item.requestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            });
+            
+            return item;
+        }
+        
+        // 播放视频函数
+        function playVideo(video) {
+            // 如果有视频正在播放，暂停它
+            if (currentPlayingVideo && currentPlayingVideo !== video) {
+                currentPlayingVideo.pause();
+            }
+            
+            // 播放当前视频
+            if (video.paused) {
+                video.play();
+                currentPlayingVideo = video;
+            } else {
+                video.pause();
+                currentPlayingVideo = null;
+            }
+        }
+        
+        // 切换播放/暂停
+        function togglePlayPause(video) {
+            if (video.paused) {
+                playVideo(video);
+            } else {
+                video.pause();
+                currentPlayingVideo = null;
+            }
+        }
+        
+        // 处理窗口大小变化时的指示器位置
+        window.addEventListener('resize', () => {
+            positionIndicator(document.querySelector('.tab-btn.active'));
+        });
+    </script>
+</body>
+</html>
