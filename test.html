@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>胚胚纪实·合订本</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --light: #f9f9f9;
+            --dark: #2c3e50;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --radius: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            padding: 20px;
+            min-height: 100vh;
+            transition: opacity 0.5s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        .event-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .event-header {
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .event-header::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent transparent;
+        }
+        
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .event-content {
+            padding: 25px 20px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .event-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        
+        .collapse-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .event-header:hover .collapse-btn {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .dialogue {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .dialogue:last-child {
+            margin-bottom: 0;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 15px;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+        
+        .peizi {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+        
+        .jiegou {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        
+        .laoyang {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333 !important;
+        }
+        
+        .laozhang {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        
+        .laoli {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            color: #333 !important;
+        }
+        
+        .other {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+        
+        .bubble {
+            background: #f0f7ff;
+            border-radius: 18px;
+            padding: 12px 15px;
+            position: relative;
+            flex-grow: 1;
+            border: 1px solid #e1e8ed;
+            transition: transform 0.3s;
+        }
+        
+        .bubble::before {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid #f0f7ff;
+        }
+        
+        .bubble::after {
+            content: "";
+            position: absolute;
+            left: -11px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid #e1e8ed;
+        }
+        
+        .speaker {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .peizi-speaker {
+            color: #e84393;
+        }
+        
+        .jiegou-speaker {
+            color: #0984e3;
+        }
+        
+        .laoyang-speaker {
+            color: #d35400;
+        }
+        
+        .laozhang-speaker {
+            color: #00b894;
+        }
+        
+        .laoli-speaker {
+            color: #27ae60;
+        }
+
+        .sushen-speaker {
+            color: #6c5ce7;
+        }
+
+        .context {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #3498db;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .emojis {
+            display: inline-block;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            vertical-align: middle;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #3498db;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #search-input:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        /* 搜索结果高亮 */
+        .highlight {
+            background-color: #ffeaa7;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* 新增：搜索隐藏状态 */
+        .event-card[data-search-hidden="true"] {
+            display: none !important;
+        }
+
+        /* 确保折叠动画不受影响 */
+        .event-content {
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* 返回顶部按钮 */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .scroll-to-top:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        /* 新增：确保图标居中显示 */
+        .scroll-to-top i {
+            margin: 0;
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜索事件或对话内容...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <div class="no-results" id="no-results">没有找到匹配的结果 😢</div>
+
+        <header>
+            <h1>胚胚纪实</h1>
+            <p class="subtitle">记录胚胚与苏畜，张楚，杰除，杨÷，李处间的趣事、对话和难忘瞬间</p>
+        </header>
+        
+        <div class="events-grid">
+            <!-- 又甜又御 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《又甜又御》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>杰哥，想谈恋爱了。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar jiegou">杰</div>
+                        <div class="bubble">
+                            <div class="speaker jiegou-speaker">杰哥</div>
+                            <p>不敢的胚子</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>今天看到一个女生，是我喜欢的类型</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar jiegou">杰</div>
+                        <div class="bubble">
+                            <div class="speaker jiegou-speaker">杰哥</div>
+                            <p>胚子喜欢什么类型的</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>就是那种又甜又御的</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar jiegou">杰</div>
+                        <div class="bubble">
+                            <div class="speaker jiegou-speaker">杰哥</div>
+                            <p>怎么敢的，胚子，不会是网上认识的吧</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>怎么可能，就我们学校的</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar jiegou">杰</div>
+                        <div class="bubble">
+                            <div class="speaker jiegou-speaker">杰哥</div>
+                            <p>是谁啊胚子</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>嗯～不能告诉你的杰哥</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 初入圣境 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《初入圣境》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《你们觉得我最近还有情绪波动吗》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《你们打印怎么都不帮我带的，生气了，真的投》</p>
+                            <div class="context">《元不是说自己没有情绪吗现在...》</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 四季苏汇 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《四季苏汇》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《那个技师当时还说，你挺大的呢》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《说了你也不懂》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我当时都没什么感觉，当时技师说她手都累了，我都没什么感觉，真的》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 白沫事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《白沫事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《"老张"，我感觉自己不行了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《你快打120啊》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《今天的汇报我去不了了，要辛苦你们帮我去一下了》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 压力闹钟 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《压力闹钟》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《妈的，杰哥，真的蠢～.》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我定了三个闹钟都没把我叫起来》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《废物闹钟》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《没把我闹醒》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 没叫事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《没叫事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《嗯～."老张"，投了，我以为2:00考试呢》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《然后一看你们都走了，我就没有去了，懒得去了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《投了,怎么都不叫我的》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 肌肉变异 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《肌肉变异》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《哎哎哎，我苏，你来看，你摸摸你自己的》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《"老张"，你也是，你现在摸你肩膀上面那块肌肉，你看你们正常人是这个样子的，你看我这边我这里就多一块肌肉》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《就是我打球的时候，肘不是要往上面抬吗？这个肌肉就挤着我的肩膀，不让我抬上去》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 天赋 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《天赋》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《感觉我没天赋，以后不打了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《所以说我有的时候打干就是击球点的问题，感觉就是这边这个肌肉多出来一块》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《不打了，"老张"，以后你们去打球吧，我没有这个天赋》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 握拍事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《握拍事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我靠，之前看了那么多视频都没有发现自己的问题，今天我终于发现了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《就是你们看 你们握拍的时候，这个大拇指是可以捏住球拍的》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我操改完之后确实变好了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我这个大拇指之前受过伤，就是杀球的时候，根本就捏不住这个拍子》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>我靠，改了这个握拍确实好很多,感觉真就是握拍的问题吧</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 吃鱼事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《吃鱼事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《恩～，老李，你们快吃啊》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《还有不少鱼呢》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 老李逃窜事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《老李逃窜事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="context">【339+z+y+p+l】</div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>恩,肚子疼, 想放屁</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar laoyang">杨</div>
+                        <div class="bubble">
+                            <div class="speaker laoyang-speaker">老杨</div>
+                            <p>妈的， 胚子要放出去放</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">（pp就开门在门口放了一下）</div>
+                    <div class="context">（那天是星期四，p点了肯德基吃的）</div>
+                    <div class="context">（然后就是一阵巨臭无比的气体之间袭来）</div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar laozhang">张</div>
+                        <div class="bubble">
+                            <div class="speaker laozhang-speaker">老张</div>
+                            <p>我当时坐在那个下面的小板凳， 我直接站起来走了，"老杨"一看我走了，几秒钟之后直接开始骂</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar laoyang">杨</div>
+                        <div class="bubble">
+                            <div class="speaker laoyang-speaker">老杨</div>
+                            <p>妈的，胚子这么感fp的</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar laoyang">杨</div>
+                        <div class="bubble">
+                            <div class="speaker laoyang-speaker">老杨</div>
+                            <p>老李这个时候还没有听到</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">（直到"老张"和"老杨"躲到阳台，老李才后知后觉逃窜337）</div>
+                </div>
+            </div>
+            
+            <!-- 电梯fp事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《电梯fp事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《杰哥，我感觉我羽毛球打不好就是身高的原因，我要是有你这么高的身高，我随便接各种求了》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar jiegou">杰</div>
+                        <div class="bubble">
+                            <div class="speaker jiegou-speaker">杰哥</div>
+                            <p>《不会啊，元，你看金庭虽然个子不高。。。。》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar other">空气</div>
+                        <div class="bubble">
+                            <div class="speaker">空气</div>
+                            <p>噗～！#-"。)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">（当时就听到一个巨响无比的声音从右边传来）</div>
+                    <div class="context">（pp 当着杰哥的面在电梯里放了一个巨响无比的屁）</div>
+                </div>
+            </div>
+            
+            <!-- 百分大屌事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《百分大屌事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="context">
+                        （呸呸在群里分享了一个b站视频：100分的生殖器长啥样，对照一下自己的吧!）
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《你是多少分捏？》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar laozhang">张</div>
+                        <div class="bubble">
+                            <div class="speaker laozhang-speaker">老张</div>
+                            <p>《？》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>《我是一百因为满分只是一百》</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar other">苏</div>
+                        <div class="bubble">
+                            <div class="speaker sushen-speaker">苏神（已改名一百之王）</div>
+                            <p>《？》</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- KTV银角事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《KTV银角事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="context">
+                        （一次唱k，苏张杨呸）
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>我想练高音了</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">
+                        （随后b站搜索教程<br>
+                        初步银角<br>
+                        张苏杨察觉不对劲但劝阻无果）
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>你们先唱我练会</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">
+                        （银角持续<br>
+                        直到唱k结束）
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>以后得多练了</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">
+                        ……<br>
+                        （几天后张独坐宿舍<br>
+                        突然听到诡异声响<br>
+                        左右检查无果<br>
+                        打开阳台发现从隔壁传来<br>
+                        发现是我呸<br>
+                        依旧银角）
+                    </div>
+                </div>
+            </div>
+            <!-- 桃花诺事件 -->
+            <div class="event-card">
+                <div class="event-header">
+                    <h2 class="event-title">《桃花诺事件》</h2>
+                    <div class="collapse-btn">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <div class="context">
+                        （大一那会儿张和杰和袁三人打PUBG后,游戏结束，语音软件kook并未退出...）
+                    </div>
+                    
+                    <div class="context">
+                        （张,杰在座位交谈之时，突然听到耳机中有动人的歌喉传来。）
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>花斑 斑～<span class="emojis">（第二个斑已破）</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="dialogue">
+                        <div class="avatar peizi">胚</div>
+                        <div class="bubble">
+                            <div class="speaker peizi-speaker">胚胚</div>
+                            <p>留在 爱你<span class="emojis">「真声」</span>的  路<span class="emojis">「假声·已破」</span>～</p>
+                        </div>
+                    </div>
+                    
+                    <div class="context">
+                        （听罢，张杰二人呆愣数秒，遂捧腹）
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="commentbox"></div>
+        <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
+        <script>commentBox('5668095377014784-proj')</script>
+
+        
+        <div class="footer">
+            <p>最终解释权归pp所有 &copy; 2025</p>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="scroll-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始显示所有卡片
+            setTimeout(() => {
+                document.querySelectorAll('.event-card').forEach(card => {
+                    card.classList.add('visible');
+                });
+                document.body.style.opacity = 1;
+            }, 100);
+            
+            // 折叠功能实现
+            document.querySelectorAll('.collapse-btn, .event-header').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    const header = this.closest('.event-header');
+                    if (!header) return;
+                    
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.collapse-btn i');
+                    
+                    if (content && content.classList.contains('event-content')) {
+                        content.classList.toggle('collapsed');
+                        
+                        if (icon) {
+                            if (content.classList.contains('collapsed')) {
+                                icon.classList.remove('fa-chevron-down');
+                                icon.classList.add('fa-chevron-up');
+                            } else {
+                                icon.classList.remove('fa-chevron-up');
+                                icon.classList.add('fa-chevron-down');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // 添加头像悬停效果
+            const avatars = document.querySelectorAll('.avatar');
+            avatars.forEach(avatar => {
+                avatar.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                avatar.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0)';
+                });
+            });
+            
+            // 添加气泡悬停效果
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                });
+                
+                bubble.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+            
+            // 搜索功能实现
+            const searchInput = document.getElementById('search-input');
+            const eventCards = document.querySelectorAll('.event-card');
+            const noResults = document.getElementById('no-results');
+            
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                let hasResults = false;
+                
+                eventCards.forEach(card => {
+                    const cardContent = card.textContent.toLowerCase();
+                    const cardTitle = card.querySelector('.event-title').textContent.toLowerCase();
+                    const isMatch = searchTerm === '' || 
+                                cardContent.includes(searchTerm) || 
+                                cardTitle.includes(searchTerm);
+                    
+                    // 控制显示/隐藏
+                    card.style.display = isMatch ? 'block' : 'none';
+                    if (isMatch) hasResults = true;
+                });
+                
+                noResults.style.display = hasResults ? 'none' : 'block';
+            });
+            
+            // 返回顶部按钮显示逻辑
+            window.addEventListener('scroll', function() {
+                const scrollBtn = document.querySelector('.scroll-to-top');
+                if (window.scrollY > 300) {
+                    scrollBtn.style.opacity = 1;
+                    scrollBtn.style.visibility = 'visible';
+                } else {
+                    scrollBtn.style.opacity = 0;
+                    scrollBtn.style.visibility = 'hidden';
+                }
+            });
+        });
+        
+        // 返回顶部函数
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
