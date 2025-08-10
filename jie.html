@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>胚胚纪实·合订本</title>
+    <title>汝杰圣地</title>
     <!-- 引入 SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -60,40 +60,88 @@
             margin: 0 auto;
         }
         
+        /* 假设这是整个内容区域最大宽度 */
+        :root {
+        --max-width: 1200px;
+        --radius: 8px;
+        --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        --primary: #4e91f9;
+        --secondary: #56ccf2;
+        --accent: #2f80ed;
+        --dark: #222;
+        }
+
+        /* 让header和section都宽度和边距一致 */
+        header, section {
+        max-width: var(--max-width);
+        width: 90%;
+        margin: 0 auto 30px;
+        position: relative;
+        }
+
+        /* header 样式调整 */
         header {
-            text-align: center;
-            padding: 30px 0;
-            margin-bottom: 30px;
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
+        position: relative;
+        max-width: 1200px;
+        width: 67%;
+        margin: 0 auto 30px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: visible;
+        padding: 20px 30px;
         }
-        
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+
+        /* 顶部封面背景 */
+        header .cover {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 120px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        border-radius: var(--radius) var(--radius) 0 0;
+        z-index: 0;
         }
-        
-        h1 {
-            color: var(--dark);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+
+        /* 头像和文字容器，横向排列，整体靠左 */
+        header .profile-info {
+        display: flex;
+        align-items: center;
+        position: relative;  /* 让 z-index 有效 */
+        z-index: 1;
+        margin-top: 100px; /* 顶部封面高度+间隙 */
         }
-        
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
+
+        /* 头像 */
+        header .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid white;
+        object-fit: cover;
+        background: white;
+        flex-shrink: 0; /* 不缩小 */
         }
-        
+
+        /* 昵称和签名竖直排列 */
+        header .text-info {
+        margin-left: 20px;
+        text-align: left;
+        }
+
+        header h1 {
+        font-size: 1.6rem;
+        color: var(--dark);
+        margin: 0 0 6px 0;
+        }
+
+        header .subtitle {
+        font-size: 1rem;
+        color: #7f8c8d;
+        margin: 0;
+        }
+
+
         .events-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -263,30 +311,6 @@
             font-weight: 600;
             margin-bottom: 5px;
             color: var(--dark);
-        }
-        
-        .peizi-speaker {
-            color: #e84393;
-        }
-        
-        .jiegou-speaker {
-            color: #0984e3;
-        }
-        
-        .laoyang-speaker {
-            color: #d35400;
-        }
-        
-        .laozhang-speaker {
-            color: #00b894;
-        }
-        
-        .laoli-speaker {
-            color: #27ae60;
-        }
-
-        .sushen-speaker {
-            color: #6c5ce7;
         }
 
         .context {
@@ -558,9 +582,17 @@
         <div class="no-results" id="no-results">没有找到匹配的结果 😢</div>
 
         <header>
-            <h1>杰畜纪实</h1>
-            <p class="subtitle">记录杰除的趣事、对话和难忘瞬间</p>
+            <div class="cover"></div>
+            <div class="profile-info">
+                <img src="assets/jie_pho/jie06.jpg" alt="头像" class="avatar" />
+                <div class="text-info">
+                <h1>杰哥</h1>
+                <p class="subtitle">sb苏处</p>
+                </div>
+            </div>
         </header>
+
+
 
         <!DOCTYPE html>
 <body>    
@@ -677,8 +709,8 @@
             </div>
 
             <div class="comment-section">
-                <p>这里是评论内容，可以写死在代码里。</p>
-                <p>第二条评论示例</p>
+                <p>呸呸：我说实话，杰哥本质渣男</p>
+                <p>老李：杰哥太强了</p>
             </div>
             
             <div class="moment-actions">
@@ -715,8 +747,8 @@
             </div>
 
             <div class="comment-section">
-                <p>这里是评论内容，可以写死在代码里。</p>
-                <p>第二条评论示例</p>
+                <p>苏大表白墙：这里是墙墙</p>
+                <p></p>
             </div>
             
             <div class="moment-actions">
@@ -734,37 +766,6 @@
             </div>
         </div>
     </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     </div>
               
