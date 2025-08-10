@@ -12,8 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const config = {
         passwords: {
             // 各页面对应的密码(Base64编码)
-            "articles.html": btoa("yxy241007"),  // 文章页面密码
-            "peizi.html": btoa("1500")       // 胚胚纪实页面密码
+            "articles.html": btoa("1234"),    // 文章页面密码
+            "peizi.html": btoa("1500"),     // 胚胚纪实页面密码
+            "jie.html": btoa("5800") // 杰哥页面密码
         },
         maxAttempts: 3,                      // 最大尝试次数
         tokenPrefix: "access_token_",        // SessionStorage 密钥前缀

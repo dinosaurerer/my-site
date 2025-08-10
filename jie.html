@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>胚胚纪实·合订本</title>
+    <!-- 引入 SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 页面访问验证
+        (function() {
+            // 获取当前页面文件名
+            const currentPage = window.location.pathname.split('/').pop();
+            // 检查访问令牌
+            if (!sessionStorage.getItem("access_token_" + currentPage)) {
+                // 显示提示后跳转回首页
+                Swal.fire({
+                    icon: "error",
+                    title: "访问受限",
+                    text: "请从首页验证后访问",
+                    confirmButtonText: "返回首页",
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = "index.html";
+                });
+            }
+        })();
+    </script>
+
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --light: #f9f9f9;
+            --dark: #2c3e50;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --radius: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            padding: 20px;
+            min-height: 100vh;
+            transition: opacity 0.5s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        .event-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .event-header {
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .event-header::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent transparent;
+        }
+        
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .event-content {
+            padding: 25px 20px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .event-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        
+        .collapse-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .event-header:hover .collapse-btn {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .dialogue {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .dialogue:last-child {
+            margin-bottom: 0;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 15px;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+        
+        .peizi {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        }
+        
+        .jiegou {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        
+        .laoyang {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333 !important;
+        }
+        
+        .laozhang {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        
+        .laoli {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            color: #333 !important;
+        }
+        
+        .other {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+        
+        .bubble {
+            background: #f0f7ff;
+            border-radius: 18px;
+            padding: 12px 15px;
+            position: relative;
+            flex-grow: 1;
+            border: 1px solid #e1e8ed;
+            transition: transform 0.3s;
+        }
+        
+        .bubble::before {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid #f0f7ff;
+        }
+        
+        .bubble::after {
+            content: "";
+            position: absolute;
+            left: -11px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid #e1e8ed;
+        }
+        
+        .speaker {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .peizi-speaker {
+            color: #e84393;
+        }
+        
+        .jiegou-speaker {
+            color: #0984e3;
+        }
+        
+        .laoyang-speaker {
+            color: #d35400;
+        }
+        
+        .laozhang-speaker {
+            color: #00b894;
+        }
+        
+        .laoli-speaker {
+            color: #27ae60;
+        }
+
+        .sushen-speaker {
+            color: #6c5ce7;
+        }
+
+        .context {
+            font-style: italic;
+            color: #7f8c8d;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #3498db;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .emojis {
+            display: inline-block;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            vertical-align: middle;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+            position: relative;
+        }
+
+
+        #search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #3498db;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        #search-input:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        /* 搜索结果高亮 */
+        .highlight {
+            background-color: #ffeaa7;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* 新增：搜索隐藏状态 */
+        .event-card[data-search-hidden="true"] {
+            display: none !important;
+        }
+
+        /* 确保折叠动画不受影响 */
+        .event-content {
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* 返回顶部按钮 */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .scroll-to-top:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        /* 新增：确保图标居中显示 */
+        .scroll-to-top i {
+            margin: 0;
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-title {
+                font-size: 1.2rem;
+            }
+        }
+
+
+        .moment-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 16px 20px;
+    
+            margin: 0 auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        
+            margin-bottom: 20px;
+            max-width: 800px;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .moment-images {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap; /* 如果图片太多会自动换行 */
+        gap: 10px; /* 图片间距 */
+        margin-top: 15px; /* 图片和内容之间的间距 */
+        }
+
+        .moment-image {
+            flex: 1 1 45%; /* 两张图一行，可调整 */
+            max-width: 45%;
+        }
+
+        .moment-image img {
+            width: 100%;
+            height: 100%; /* 固定高度 */
+            object-fit: cover; /* 裁切保持比例填充 */
+            border-radius: var(--radius); /* 保持圆角 */
+            box-shadow: var(--shadow);
+        }
+
+        .moment-header {
+            display: flex;
+            align-items: center;  /* 垂直居中 */
+            
+            margin-bottom: 15px;
+        }
+
+        .moment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;  /* 头像和文字间距 */
+            flex-shrink: 0;      /* 防止头像被压缩 */
+        }
+
+        .moment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .moment-user h3 {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.2;
+        }
+
+        .moment-time {
+            font-size: 12px;
+            color: #666;
+        }
+    
+        /* 点赞按钮样式 */
+        .moment-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px; /* 按钮之间间隔 */
+            padding: 8px 12px; /* 可选，内边距 */
+        }
+
+
+        .like-button {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            color: #888;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .like-button .heart-icon {
+            font-size: 18px;
+            margin-right: 6px;
+            transition: transform 0.3s ease;
+            color: #888;
+        }
+
+        /* 点赞激活状态 */
+        .like-button.liked {
+            color: #e0245e;
+        }
+
+        .like-button.liked .heart-icon {
+            color: #e0245e;
+            animation: heart-pop 0.4s forwards;
+        }
+
+        /* 心形放大动画 */
+        @keyframes heart-pop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    
+        .comment-section {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜索事件或对话内容...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <div class="no-results" id="no-results">没有找到匹配的结果 😢</div>
+
+        <header>
+            <h1>杰畜纪实</h1>
+            <p class="subtitle">记录杰除的趣事、对话和难忘瞬间</p>
+        </header>
+
+        <!DOCTYPE html>
+<body>    
+
+    <!-- 板块1: 记录杰除的趣事 -->
+    <section id="funny-moments" class="timeline-section">
+      
+        <div class="moment-card">
+            <div class="moment-header">
+                <div class="moment-avatar">
+                    <img src="/assets/su_pho/IMG_1944.PNG" alt="苏🐖">
+                </div>
+                <div class="moment-user">
+                    <h3>苏🐖</h3>
+                    <div class="moment-time">2023年11月15日 · 下午4:13</div>
+                </div>
+            </div>
+            <div class="moment-content">
+                <p>今天杰哥和我一起去唱K，结果他撸晕过去了，哈哈哈~</p>
+            </div>
+            <div class="moment-images">
+                <!-- 第一张图片 -->
+                <div class="moment-image">
+                    <img src="/assets/jie_pho/jie01.jpg" alt="趣事照片1">
+                </div>
+                <!-- 第二张图片 -->
+                <div class="moment-image">
+                    <img src="/assets/jie_pho/jie02.jpg" alt="趣事照片2">
+                </div>
+            </div>
+
+            <div class="moment-actions">
+                <div class="like-button" id="likeBtn">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-count">363</span>
+                </div>
+
+                <div class="comment-button">
+                    <i class="fas fa-comment"></i> 评论
+                </div>
+
+                <div class="action-btn">
+                    <i class="fas fa-share"></i> 分享
+                </div>
+            </div>
+
+            <div class="comment-section">
+                <p>苏🐖：杰哥是真的逊啊👎</p>
+                <p>杰哥 回复 苏🐖：傻逼苏处</p>
+            </div>
+
+    </section>           
+
+     
+    <section id="6+1" class="timeline-section">
+        <div class="moment-card">
+            <div class="moment-header">
+                <div class="moment-avatar">
+                    <img src="/assets/jie_pho/jie04.jpg" alt="杰哥">
+                </div>
+                <div class="moment-user">
+                    <h3>杰哥(已王朝)</h3>
+                    <div class="moment-time">2025年8月7日 · 下午2:45</div>
+                </div>
+            </div>
+            <div class="moment-content">
+                <p>今天和6+1一起去吃饭，结果她点了好多菜，吃到撑，我太屌了！</p>
+            </div>
+            <div class="moment-images">
+                <!-- 第一张图片 -->
+                <div class="moment-image">
+                    <img src="/assets/jie_pho/jie03.jpg" alt="趣事照片1">
+                </div>
+                <!-- 第二张图片 -->
+                <div class="moment-image">
+                    <img src="/assets/jie_pho/jie05.jpg" alt="趣事照片2">
+                </div>
+            </div>
+
+            <div class="comment-section">
+                <p>苏🐖：杰哥是真的逊啊👎</p>
+                <p>杰哥：傻逼苏处</p>
+            </div>
+
+            <div class="moment-actions">
+                <div class="like-button" id="likeBtn">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-count">3563</span>
+                </div>
+
+
+                <div class="action-btn">
+                    <i class="fas fa-comment"></i> 评论
+                </div>
+                <div class="action-btn">
+                    <i class="fas fa-share"></i> 分享
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="moment-card">
+            <div class="moment-header">
+                <div class="moment-avatar">
+                    <img src="/assets/jie_pho/jie04.jpg" alt="杰哥">
+                </div>
+                <div class="moment-user">
+                    <h3>杰哥(已王朝)</h3>
+                    <div class="moment-time">2025年8月7日 · 下午2:45</div>
+                </div>
+            </div>
+            <div class="moment-content">
+                <p>今天是立秋，6+1给我点了插白道喝，不懂是什么意思，评论区有懂哥吗！</p>
+            </div>
+
+            <div class="comment-section">
+                <p>这里是评论内容，可以写死在代码里。</p>
+                <p>第二条评论示例</p>
+            </div>
+            
+            <div class="moment-actions">
+                <div class="like-button" id="likeBtn">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-count">356</span>
+                </div>
+
+
+                <div class="action-btn">
+                    <i class="fas fa-comment"></i> 评论
+                </div>
+                <div class="action-btn">
+                    <i class="fas fa-share"></i> 分享
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="first-day" class="timeline-section">
+ 
+        <div class="moment-card">
+            <div class="moment-header">
+                <div class="moment-avatar">
+                    <img src="/assets/jie_pho/jie04.jpg" alt="杰哥">
+                </div>
+                <div class="moment-user">
+                    <h3>杰哥想谈恋爱</h3>
+                    <div class="moment-time">2024年10月9日 · 上午0:38</div>
+                </div>
+            </div>
+            <div class="moment-content">
+                <p>今天老张和我谈到了初中往事，我越想心里越酸涩，想她了/(ㄒoㄒ)/~~</p>
+            </div>
+
+            <div class="comment-section">
+                <p>这里是评论内容，可以写死在代码里。</p>
+                <p>第二条评论示例</p>
+            </div>
+            
+            <div class="moment-actions">
+                <div class="like-button" id="likeBtn">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-count">355463</span>
+                </div>
+
+                <div class="action-btn">
+                    <i class="fas fa-comment"></i> 评论
+                </div>
+                <div class="action-btn">
+                    <i class="fas fa-share"></i> 分享
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+              
+    <!-- 返回顶部按钮 -->
+    <button class="scroll-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+
+        const likeButtons = document.querySelectorAll('.like-button');
+
+        likeButtons.forEach(btn => {
+        let liked = false;
+        let countElem = btn.querySelector('.like-count');
+        let likeCount = parseInt(countElem.textContent);
+
+        btn.addEventListener('click', () => {
+            liked = !liked;
+            if (liked) {
+            likeCount++;
+            btn.classList.add('liked');
+            } else {
+            likeCount--;
+            btn.classList.remove('liked');
+            }
+            countElem.textContent = likeCount;
+        });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.comment-button').forEach(button => {
+            button.addEventListener('click', () => {
+            const commentSection = button.parentElement.nextElementSibling;
+            if (commentSection.style.display === 'none' || commentSection.style.display === '') {
+                commentSection.style.display = 'block';
+            } else {
+                commentSection.style.display = 'none';
+            }
+            });
+        });
+        });
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始显示所有卡片
+            setTimeout(() => {
+                document.querySelectorAll('.event-card').forEach(card => {
+                    card.classList.add('visible');
+                });
+                document.body.style.opacity = 1;
+            }, 100);
+
+            // 树状结构展开/折叠
+            document.querySelectorAll(".caret").forEach(caret => {
+                caret.addEventListener("click", function() {
+                    this.parentElement.querySelector(".nested")?.classList.toggle("active");
+                    this.classList.toggle("caret-down");
+                });
+            });
+
+            // 折叠功能实现
+            document.querySelectorAll('.collapse-btn, .event-header').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    const header = this.closest('.event-header');
+                    if (!header) return;
+                    
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.collapse-btn i');
+                    
+                    if (content && content.classList.contains('event-content')) {
+                        content.classList.toggle('collapsed');
+                        
+                        if (icon) {
+                            if (content.classList.contains('collapsed')) {
+                                icon.classList.remove('fa-chevron-down');
+                                icon.classList.add('fa-chevron-up');
+                            } else {
+                                icon.classList.remove('fa-chevron-up');
+                                icon.classList.add('fa-chevron-down');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // 添加头像悬停效果
+            const avatars = document.querySelectorAll('.avatar');
+            avatars.forEach(avatar => {
+                avatar.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                avatar.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0)';
+                });
+            });
+            
+            // 添加气泡悬停效果
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                });
+                
+                bubble.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+            
+            // 搜索功能实现
+            const searchInput = document.getElementById('search-input');
+            const eventCards = document.querySelectorAll('.event-card');
+            const treeBranches = document.querySelectorAll('.tree-branch');
+            const noResults = document.getElementById('no-results');
+
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                let hasResults = false;
+
+                // 事件卡片过滤
+                eventCards.forEach(card => {
+                    const cardContent = card.textContent.toLowerCase();
+                    const cardTitle = card.querySelector('.event-title')?.textContent.toLowerCase() || "";
+                    const isMatch = searchTerm === '' || 
+                                cardContent.includes(searchTerm) || 
+                                cardTitle.includes(searchTerm);
+                    
+                    card.style.display = isMatch ? 'block' : 'none';
+                    if (isMatch) hasResults = true;
+                });
+
+                // 无结果提示
+                noResults.style.display = hasResults ? 'none' : 'block';
+            });
+
+            // 返回顶部按钮显示逻辑
+            window.addEventListener('scroll', function() {
+                const scrollBtn = document.querySelector('.scroll-to-top');
+                if (window.scrollY > 300) {
+                    scrollBtn.style.opacity = 1;
+                    scrollBtn.style.visibility = 'visible';
+                } else {
+                    scrollBtn.style.opacity = 0;
+                    scrollBtn.style.visibility = 'hidden';
+                }
+            });
+        });
+        
+        // 返回顶部函数
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+    </div>
+        <div class="commentbox"></div>
+        <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
+        <script>commentBox('5668095377014784-proj')</script>
+        <div class="footer">
+            <p>最终解释权归洋葱和6+1所有 &copy; 2025</p>
+        </div>
+    </div>
+
+</body>
+</html>
